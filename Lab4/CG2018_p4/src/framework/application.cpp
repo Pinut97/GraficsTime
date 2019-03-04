@@ -55,14 +55,22 @@ void Application::init(void)
 
 	//we load one or several shaders...
 	shader = new Shader();
-	shader->load( "simple.vs", "simple.ps" );
 
 	//load your Gouraud and Phong shaders here
-	//...
+	gouraud_shader = new Shader();
+	gouraud_shader->load("gouraud.vs", "gouraud.ps");
+
+	phong_shader = new Shader();
+	phong_shader->load("phong.vs", "phong.ps");
+
+	//default
+	shader = gouraud_shader;
 
 	//CODE HERE:
 	//create a light (or several) and a materials
-	//...
+	light = new Light();
+	material = new Material();
+
 }
 
 //render one frame
@@ -75,6 +83,17 @@ void Application::render(void)
 
 	//Get the viewprojection matrix from our camera
 	Matrix44 viewprojection = camera->getViewProjectionMatrix();
+
+	Vector3 ka = material->ambient;
+	Vector3 ia;
+	ia.set(0.1, 0.1, 0.1);
+	Vector3 kd = material->diffuse;
+	Vector3 id = light->diffuse_color;
+	Vector3 is = light->specular_color;
+	Vector3 ks = material->specular;
+	Vector3 V = camera->eye;
+	Vector3 L = light->position;
+	float alpha = material->shininess;
 
 	//choose a shader and enable it
 	shader->enable();
@@ -89,6 +108,16 @@ void Application::render(void)
 	//CODE HERE: pass all the info needed by the shader to do the computations
 	//send the material and light uniforms to the shader
 	//...
+	
+	shader->setVector3("ka", ka);
+	gouraud_shader->setVector3("ia", ia);
+	shader->setVector3("kd", kd);
+	shader->setVector3("id", id);
+	shader->setVector3("is", is);
+	shader->setVector3("ks", ks);
+	shader->setVector3("eye", V);
+	shader->setVector3("light", L);
+	shader->setFloat("alpha", alpha);
 
 	//do the draw call into the GPU
 	mesh->render(GL_TRIANGLES);
@@ -105,6 +134,23 @@ void Application::update(double seconds_elapsed)
 {
 	if (keystate[SDL_SCANCODE_SPACE])
 		angle += seconds_elapsed;
+	if (keystate[SDL_SCANCODE_DELETE])
+		angle -= seconds_elapsed;
+	//chose shader
+	if (keystate[SDL_SCANCODE_1])
+		shader = gouraud_shader;
+	if (keystate[SDL_SCANCODE_2])
+		shader = phong_shader;
+
+	//change color
+	if (keystate[SDL_SCANCODE_G]) //green
+		light->diffuse_color.set(0.0, 1.0, 0.0);
+	if (keystate[SDL_SCANCODE_B]) //blue
+		light->diffuse_color.set(0.0, 0.0, 1.0);
+	if (keystate[SDL_SCANCODE_R]) //red
+		light->diffuse_color.set(1.0, 0.0, 0.0);
+	if (keystate[SDL_SCANCODE_T])
+		light->diffuse_color.set(0.6f, 0.6f, 0.6f);
 
 	if (keystate[SDL_SCANCODE_RIGHT])
 		camera->eye = camera->eye + Vector3(1, 0, 0) * seconds_elapsed * 10.0;
