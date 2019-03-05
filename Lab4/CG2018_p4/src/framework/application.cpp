@@ -142,7 +142,17 @@ void Application::update(double seconds_elapsed)
 	if (keystate[SDL_SCANCODE_2])
 		shader = phong_shader;
 
-	//change color
+	//change light position
+	if (keystate[SDL_SCANCODE_A])
+		light->position.x += 40 * seconds_elapsed;
+	if (keystate[SDL_SCANCODE_D])
+		light->position.x -= 40 * seconds_elapsed;
+	if (keystate[SDL_SCANCODE_W])
+		light->position.y -= 40 * seconds_elapsed;
+	if (keystate[SDL_SCANCODE_S])
+		light->position.y += 40 * seconds_elapsed;
+
+	//change light color
 	if (keystate[SDL_SCANCODE_G]) //green
 		light->diffuse_color.set(0.0, 1.0, 0.0);
 	if (keystate[SDL_SCANCODE_B]) //blue
@@ -151,6 +161,23 @@ void Application::update(double seconds_elapsed)
 		light->diffuse_color.set(1.0, 0.0, 0.0);
 	if (keystate[SDL_SCANCODE_T])
 		light->diffuse_color.set(0.6f, 0.6f, 0.6f);
+
+	//change material color
+	if (keystate[SDL_SCANCODE_Z])
+		material->ambient.set(1.0, 0.0, 0.0);
+	if (keystate[SDL_SCANCODE_X])
+		material->ambient.set(0.0, 1.0, 0.0);
+	if (keystate[SDL_SCANCODE_C])
+		material->ambient.set(0.0, 0.0, 1.0);
+
+	//initial state
+	if (keystate[SDL_SCANCODE_I]) {
+		light->diffuse_color.set(0.6, 0.6, 0.6);
+		light->position.set(50, 50, 0);
+		material->ambient.set(1, 1, 1);
+		camera->lookAt(Vector3(0, 20, 20), Vector3(0, 10, 0), Vector3(0, 1, 0));
+	}
+		
 
 	if (keystate[SDL_SCANCODE_RIGHT])
 		camera->eye = camera->eye + Vector3(1, 0, 0) * seconds_elapsed * 10.0;
