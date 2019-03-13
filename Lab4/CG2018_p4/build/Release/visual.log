@@ -1,10 +1,11 @@
 ﻿C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE\VC\VCTargets\Microsoft.CppBuild.targets(376,5): warning MSB8004: El directorio Intermediate no termina con una barra diagonal final. Esta instancia de compilación agregará la barra diagonal porque es necesaria para que se pueda evaluar correctamente el directorio Intermediate.
-  application.cpp
+  material.cpp
   Generando código
-  5 of 613 functions ( 0.8%) were compiled, the rest were copied from previous compilation.
+  0 of 620 functions ( 0.0%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
-    1 functions had inline decision re-evaluated but remain unchanged
+    0 functions had inline decision re-evaluated but remain unchanged
   Generación de código finalizada
   visual.vcxproj -> C:\Users\Pau\Documents\GitHub\GraficsTime\Lab4\CG2018_p4\visual\visual\..\..\build\ComputerGraphics.exe
   0 archivo(s) copiado(s)
-  0 archivo(s) copiado(s)
+  C:\Users\Pau\Documents\GitHub\GraficsTime\Lab4\CG2018_p4\visual\visual\..\..\res\texture_shader.ps
+  1 archivo(s) copiado(s)

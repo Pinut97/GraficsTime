@@ -20,6 +20,9 @@ Material* material = NULL;
 Light* light = NULL;
 Shader* phong_shader = NULL;
 Shader* gouraud_shader = NULL;
+Shader* texture_shader = NULL;
+Texture* texture_specular = NULL;
+Texture* texture_normal = NULL;
 
 float angle = 0;
 
@@ -63,13 +66,23 @@ void Application::init(void)
 	phong_shader = new Shader();
 	phong_shader->load("phong.vs", "phong.ps");
 
+	texture_shader = new Shader();
+	texture_shader->load("texture_shader.vs", "texture_shader.ps");
+
 	//default
-	shader = gouraud_shader;
+	shader = texture_shader;
 
 	//CODE HERE:
 	//create a light (or several) and a materials
 	light = new Light();
 	material = new Material();
+	texture_normal = new Texture();
+	texture_specular = new Texture();
+	if (!texture_specular->load("lee_color_specular.tga") || !texture_normal->load("lee_normal.tga"))
+	{
+		std::cout << "Texture NOT FOUND!" << std::endl;
+		exit(1);
+	}
 
 }
 
@@ -85,8 +98,7 @@ void Application::render(void)
 	Matrix44 viewprojection = camera->getViewProjectionMatrix();
 
 	Vector3 ka = material->ambient;
-	Vector3 ia;
-	ia.set(0.1, 0.1, 0.1);
+	Vector3 ia = light->ambient;
 	Vector3 kd = material->diffuse;
 	Vector3 id = light->diffuse_color;
 	Vector3 is = light->specular_color;
@@ -104,13 +116,15 @@ void Application::render(void)
 	model_matrix.rotate(angle, Vector3(0, 1, 0));
 	shader->setMatrix44("model", model_matrix); //upload the transform matrix to the shader
 	shader->setMatrix44("viewprojection", viewprojection); //upload viewprojection info to the shader
+	shader->setTexture("texture_color", texture_specular);
+	shader->setTexture("texture_normal", texture_normal);
 
 	//CODE HERE: pass all the info needed by the shader to do the computations
 	//send the material and light uniforms to the shader
 	//...
 	
 	shader->setVector3("ka", ka);
-	gouraud_shader->setVector3("ia", ia);
+	shader->setVector3("ia", ia);
 	shader->setVector3("kd", kd);
 	shader->setVector3("id", id);
 	shader->setVector3("is", is);
@@ -136,11 +150,14 @@ void Application::update(double seconds_elapsed)
 		angle += seconds_elapsed;
 	if (keystate[SDL_SCANCODE_DELETE])
 		angle -= seconds_elapsed;
+
 	//chose shader
 	if (keystate[SDL_SCANCODE_1])
 		shader = gouraud_shader;
 	if (keystate[SDL_SCANCODE_2])
 		shader = phong_shader;
+	if (keystate[SDL_SCANCODE_3])
+		shader = texture_shader;
 
 	//change light position
 	if (keystate[SDL_SCANCODE_A])
@@ -178,7 +195,6 @@ void Application::update(double seconds_elapsed)
 		camera->lookAt(Vector3(0, 20, 20), Vector3(0, 10, 0), Vector3(0, 1, 0));
 	}
 		
-
 	if (keystate[SDL_SCANCODE_RIGHT])
 		camera->eye = camera->eye + Vector3(1, 0, 0) * seconds_elapsed * 10.0;
 	else if (keystate[SDL_SCANCODE_LEFT])

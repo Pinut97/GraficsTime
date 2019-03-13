@@ -1,7 +1,13 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\Lab4",
+    "\\Lab4\\CG2018_p4",
+    "\\Lab4\\CG2018_p4\\res",
+    "\\Lab4\\CG2018_p4\\src",
+    "\\Lab4\\CG2018_p4\\src\\framework",
+    "\\Lab4\\CG2018_p4\\visual"
   ],
-  "SelectedNode": "\\camera.cpp",
+  "SelectedNode": "\\Lab4\\CG2018_p4\\src\\framework\\application.cpp",
   "PreviewInSolutionExplorer": false
 }

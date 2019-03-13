@@ -9,6 +9,7 @@ public:
 	Vector3 position; //where is the light
 	Vector3 diffuse_color; //the amount (and color) of diffuse
 	Vector3 specular_color; //the amount (and color) of specular
+	Vector3 ambient;
 
 	Light();
 

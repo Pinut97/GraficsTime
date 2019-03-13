@@ -1,0 +1,48 @@
+//this var comes from the vertex shader
+//they are baricentric interpolated by pixel according to the distance to every vertex
+
+varying vec3 wPos;
+varying vec2 v_coord;
+varying vec3 v_wNormal;
+
+//here create uniforms for all the data we need here
+uniform vec3 ka;
+uniform vec3 ia;
+uniform vec3 kd;
+uniform vec3 id;
+uniform vec3 is;
+uniform vec3 ks;
+uniform vec3 light;
+uniform vec3 eye;
+uniform float alpha;
+uniform sampler2D texture_color;
+uniform sampler2D texture_normal;
+uniform mat4 model;
+
+void main()
+{
+
+	vec3 pos = wPos;
+	vec4 colorTexture = texture2D(texture_color, v_coord);
+	vec4 normal = normalize( texture2D(texture_normal, v_coord)*2.0-1.0);
+	vec3 wNormal = (model * vec4( normal.xyz, 0.0)).xyz;
+	vec3 N = wNormal;
+
+	//here write the computations for PHONG.
+	
+	vec3 L = normalize(pos - light);
+	vec3 R = normalize(reflect(L, N));
+	vec3 V = normalize(pos - eye);
+
+	float dotLN = dot(N, L);
+	dotLN = clamp(dotLN, 0.0, 1.0);
+
+	float dotRV = dot(V, R);
+	dotRV = clamp(dotRV, 0.0, 1.0);
+	dotRV = pow(dotRV, alpha);
+
+	vec3 color = ka*ia + kd*dotLN*id + ks*dotRV*is; //ambient + diffuse + specular
+
+	//set the ouput color por the pixel
+	gl_FragColor = vec4(color*colorTexture.xyz, 1.0);
+}
