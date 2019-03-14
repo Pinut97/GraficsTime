@@ -18,6 +18,7 @@ Shader* shader = NULL;
 //might be useful...
 Material* material = NULL;
 Light* light = NULL;
+Light* light2 = NULL;
 Shader* phong_shader = NULL;
 Shader* gouraud_shader = NULL;
 Shader* texture_shader = NULL;
@@ -75,6 +76,8 @@ void Application::init(void)
 	//CODE HERE:
 	//create a light (or several) and a materials
 	light = new Light();
+	light2 = new Light();
+	light2->position.set(0,0,0);
 	material = new Material();
 	texture_normal = new Texture();
 	texture_specular = new Texture();
@@ -107,6 +110,11 @@ void Application::render(void)
 	Vector3 L = light->position;
 	float alpha = material->shininess;
 
+	//second light
+	Vector3 id2 = light2->diffuse_color;
+	Vector3 is2 = light2->specular_color;
+	Vector3 L2 = light2->position;
+
 	//choose a shader and enable it
 	shader->enable();
 
@@ -132,6 +140,10 @@ void Application::render(void)
 	shader->setVector3("eye", V);
 	shader->setVector3("light", L);
 	shader->setFloat("alpha", alpha);
+
+	shader->setVector3("is2", is2);
+	shader->setVector3("id2", id2);
+	shader->setVector3("light2", L2);
 
 	//do the draw call into the GPU
 	mesh->render(GL_TRIANGLES);

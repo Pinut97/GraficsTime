@@ -19,6 +19,10 @@ uniform sampler2D texture_color;
 uniform sampler2D texture_normal;
 uniform mat4 model;
 
+uniform vec3 id2;
+uniform vec3 is2;
+uniform vec3 light2;
+
 void main()
 {
 
@@ -41,8 +45,26 @@ void main()
 	dotRV = clamp(dotRV, 0.0, 1.0);
 	dotRV = pow(dotRV, alpha);
 
-	vec3 color = ka*ia + kd*dotLN*id + ks*dotRV*is; //ambient + diffuse + specular
+	vec3 color = ka*ia + kd*dotLN*id + ks*dotRV*is;
+
+	//second light
+	vec3 L2 = normalize(pos - light2);
+	vec3 R2 = normalize(reflect(L2, N));
+	vec3 V2 = normalize(pos - eye);
+
+	float dotLN2 = dot(N, L2);
+	dotLN2 = clamp(dotLN2, 0.0, 1.0);
+
+	float dotRV2 = dot(V2, R2);
+	dotRV2 = clamp(dotRV2, 0.0, 1.0);
+	dotRV2 = pow(dotRV2, alpha);
+
+	//vec3 color2 = ka*ia + kd*dotLN2*id2 + ks*dotRV2*is2;
+
+	//vec3 color = ka*ia + kd*dotLN*id + kd*dotLN2*id2 + ks*dotRV*is + ks*dotRV2*is2; //ambient + diffuse + specular
+
+	//vec3 finalColor = color + color2;
 
 	//set the ouput color por the pixel
-	gl_FragColor = vec4(color*colorTexture.xyz, 1.0);
+	gl_FragColor = vec4(color, 0.0)*colorTexture;
 }
